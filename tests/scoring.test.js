@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { MODES, scoreGuess, scoreMode1, scoreMode2, scoreMode3 } from "../lib/scoring.js";
-import { parseGuess, parseRange } from "../lib/game.js";
+import { exampleGuess, parseGuess, parseRange } from "../lib/game.js";
 
 test("Mode 1 returns direction feedback", () => {
   assert.deepEqual(scoreMode1(40, 50), { feedback: "太小", score: null, isCorrect: false });
@@ -28,19 +28,22 @@ test("scoreGuess dispatches by mode", () => {
 
 test("parseGuess accepts decimals inside the configured range", () => {
   assert.deepEqual(parseGuess("1"), { ok: true, guess: 1 });
-  assert.deepEqual(parseGuess("-1.5", { min: -2, max: 2, precision: 1 }), { ok: true, guess: -1.5 });
-  assert.deepEqual(parseGuess("10.5"), { ok: true, guess: 10.5 });
+  assert.deepEqual(parseGuess("-1.5", { min: -2, max: 2, precision: 1 }, { numberType: "decimal", allowNegative: true }), { ok: true, guess: -1.5 });
+  assert.deepEqual(parseGuess("10.5", { min: 1, max: 100, precision: 1 }, { numberType: "decimal", allowNegative: false }), { ok: true, guess: 10.5 });
+  assert.equal(parseGuess("10.5").ok, false);
   assert.equal(parseGuess("-2.1", { min: -2, max: 2, precision: 1 }).ok, false);
   assert.equal(parseGuess("101").ok, false);
 });
 
 test("parseRange accepts negative and decimal ranges", () => {
-  assert.deepEqual(parseRange("-5.5", "10.25"), {
+  assert.deepEqual(parseRange("-5.5", "10.25", { numberType: "decimal", allowNegative: true }), {
     ok: true,
     range: { min: -5.5, max: 10.25, precision: 2 },
   });
   assert.equal(parseRange("10", "10").ok, false);
   assert.equal(parseRange("abc", "10").ok, false);
+  assert.equal(parseRange("-5", "10", { numberType: "integer", allowNegative: false }).ok, false);
+  assert.equal(parseRange("1.5", "10", { numberType: "integer", allowNegative: false }).ok, false);
 });
 
 test("scores scale to the configured range and stay integer 0-100", () => {
@@ -51,4 +54,10 @@ test("scores scale to the configured range and stay integer 0-100", () => {
   const decimalRange = { min: -1, max: 1, precision: 1 };
   assert.equal(scoreMode2(0.5, 1, decimalRange).score, 75);
   assert.equal(scoreMode3(-1, 1, 0, decimalRange).score, 0);
+});
+
+test("exampleGuess follows the selected number characteristics", () => {
+  assert.equal(exampleGuess({ min: 1, max: 100, precision: 0 }, { numberType: "integer", allowNegative: false }), "50");
+  assert.equal(exampleGuess({ min: 0, max: 10, precision: 1 }, { numberType: "decimal", allowNegative: false }), "2.5");
+  assert.equal(exampleGuess({ min: -10, max: 10, precision: 1 }, { numberType: "decimal", allowNegative: true }), "-2.5");
 });

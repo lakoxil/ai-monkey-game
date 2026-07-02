@@ -231,7 +231,7 @@ h2 {
 
 .range-form {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto auto;
   gap: 12px;
   align-items: end;
   margin-top: 16px;
@@ -261,6 +261,28 @@ h2 {
 .range-form .input-help {
   grid-column: 1 / -1;
   margin: 0;
+}
+
+.number-type-controls {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 6px;
+}
+
+.segmented-button {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 13px;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.segmented-button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .guess-form {
@@ -635,6 +657,10 @@ tbody tr:last-child td {
 
   .range-form {
     grid-template-columns: 1fr;
+  }
+
+  .number-type-controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .play-workspace .section-row {

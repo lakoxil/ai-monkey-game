@@ -46,6 +46,11 @@
             <label for="rangeMaxInput">最大值</label>
             <input id="rangeMaxInput" name="rangeMax" type="number" inputmode="decimal" step="any" value="100" required />
           </div>
+          <div class="number-type-controls" aria-label="數列特性">
+            <button class="segmented-button" id="integerModeButton" type="button" aria-pressed="true">整數</button>
+            <button class="segmented-button" id="decimalModeButton" type="button" aria-pressed="false">小數</button>
+            <button class="segmented-button" id="negativeModeButton" type="button" aria-pressed="false">負數</button>
+          </div>
           <button class="secondary-button" id="applyRangeButton" type="submit">套用範圍</button>
           <p class="input-help" id="rangeHelp" role="alert"></p>
         </form>
