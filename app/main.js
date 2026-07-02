@@ -1,3 +1,4 @@
+import { renderGameAnalysis } from "../components/GameAnalysis.js";
 import { renderHistory } from "../components/GuessHistory.js";
 import { renderModeSelector } from "../components/ModeSelector.js";
 import { streamText } from "../components/StreamingFeedback.js";
@@ -14,6 +15,7 @@ const elements = {
   inputHelp: document.querySelector("#inputHelp"),
   feedback: document.querySelector("#streamingFeedback"),
   historyBody: document.querySelector("#historyBody"),
+  analysisRoot: document.querySelector("#analysisRoot"),
   resetButton: document.querySelector("#resetButton"),
   roundCount: document.querySelector("#roundCount"),
   successStatus: document.querySelector("#successStatus"),
@@ -34,6 +36,11 @@ function render() {
   elements.guessButton.disabled = state.isComplete;
   elements.guessInput.disabled = state.isComplete;
   renderHistory(elements.historyBody, state.history);
+  renderGameAnalysis(elements.analysisRoot, {
+    history: state.history,
+    answer: state.answer,
+    isComplete: state.isComplete,
+  });
 }
 
 function changeMode(mode) {

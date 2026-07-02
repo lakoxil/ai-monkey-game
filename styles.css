@@ -152,7 +152,8 @@ h2 {
 .mode-card,
 .feedback-box,
 .teacher-panel,
-.history-section {
+.history-section,
+.analysis-section {
   margin-top: 22px;
 }
 
@@ -341,6 +342,113 @@ tbody tr:last-child td {
   font-weight: 850;
 }
 
+.analysis-placeholder,
+.analysis-observation {
+  margin: 12px 0 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: var(--row);
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.analysis-observation {
+  border-color: rgba(22, 127, 114, 0.24);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 750;
+}
+
+.analysis-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.analysis-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: #fff;
+}
+
+.analysis-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.analysis-card strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--ink);
+  font-size: clamp(1.15rem, 3vw, 1.6rem);
+}
+
+.chart-card {
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: #fff;
+}
+
+.chart-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.chart-heading h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.chart-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.chart-card svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 220px;
+  overflow: visible;
+}
+
+.chart-grid-line {
+  stroke: #e4e9e5;
+  stroke-width: 1;
+}
+
+.chart-reference-line {
+  stroke: #a63d2f;
+  stroke-dasharray: 8 6;
+  stroke-width: 2.5;
+}
+
+.chart-axis-label,
+.chart-point-label,
+.chart-reference-label {
+  fill: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.chart-point-label {
+  fill: var(--ink);
+}
+
+.chart-reference-label {
+  fill: #a63d2f;
+}
+
 @keyframes success-flash {
   0%,
   16%,
@@ -458,8 +566,14 @@ tbody tr:last-child td {
 
   .mode-tabs,
   .status-grid,
-  .teacher-grid {
+  .teacher-grid,
+  .analysis-summary {
     grid-template-columns: 1fr;
+  }
+
+  .chart-heading {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   input[type="number"],

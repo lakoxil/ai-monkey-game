@@ -54,6 +54,17 @@ http://127.0.0.1:4173
 - 猜中時會播放成功音效，並讓整個畫面閃爍三次、維持成功底色約三秒。
 - 音效使用瀏覽器內建 Web Audio 產生，不需要額外音檔。
 
+## 本局學習分析
+
+猜中後，歷史紀錄下方會自動產生單局分析：
+
+- 猜中回合、進步次數、進步率、最高 Score
+- 距離答案折線圖
+- 猜測位置折線圖
+- Mode 2 / Mode 3 的 Score / Reward 折線圖
+
+這些圖用來帶學生觀察每一次 Action 如何根據 Feedback 與 Reward 修正下一步。
+
 ## 檔案結構
 
 ```text
@@ -61,10 +72,12 @@ index.html
 styles.css
 app/main.js
 components/
+  GameAnalysis.js
   GuessHistory.js
   ModeSelector.js
   StreamingFeedback.js
 lib/
+  analysis.js
   game.js
   scoring.js
   sound.js
