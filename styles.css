@@ -33,6 +33,10 @@ body {
     sans-serif;
 }
 
+body.success-celebration {
+  animation: success-flash 3s ease-in-out both;
+}
+
 button,
 input {
   font: inherit;
@@ -317,6 +321,43 @@ tbody tr:last-child td {
 .win-text {
   color: var(--success);
   font-weight: 850;
+}
+
+@keyframes success-flash {
+  0%,
+  16%,
+  33%,
+  50% {
+    background: #fff7bf;
+  }
+
+  8%,
+  24%,
+  41% {
+    background: #d8f7e4;
+  }
+
+  58%,
+  100% {
+    background: #e8f6ee;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.success-celebration {
+    animation: success-hold 3s ease-out both;
+  }
+
+  * {
+    scroll-behavior: auto;
+  }
+}
+
+@keyframes success-hold {
+  from,
+  to {
+    background: #e8f6ee;
+  }
 }
 
 @media (max-width: 720px) {

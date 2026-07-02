@@ -3,6 +3,7 @@ import { renderModeSelector } from "../components/ModeSelector.js";
 import { streamText } from "../components/StreamingFeedback.js";
 import { buildFeedbackMessage, createGameState, MODE_CONFIG, parseGuess } from "../lib/game.js";
 import { scoreGuess } from "../lib/scoring.js";
+import { playFeedbackSound, playThinkingSound } from "../lib/sound.js";
 
 const elements = {
   modeTabs: document.querySelector("#modeTabs"),
@@ -37,6 +38,7 @@ function render() {
 
 function changeMode(mode) {
   state = createGameState(mode);
+  clearSuccessEffect();
   elements.inputHelp.textContent = "";
   elements.feedback.textContent = "已切換模式，請開始第一輪猜測。";
   render();
@@ -45,6 +47,7 @@ function changeMode(mode) {
 
 function resetGame() {
   state = createGameState(state.mode);
+  clearSuccessEffect();
   elements.inputHelp.textContent = "";
   elements.feedback.textContent = "新遊戲已開始。";
   render();
@@ -93,7 +96,10 @@ function submitGuess(event) {
   });
 
   elements.guessButton.disabled = true;
+  playThinkingSound();
   streamText(elements.feedback, message, () => {
+    playFeedbackSound(result.isCorrect);
+    if (result.isCorrect) triggerSuccessEffect();
     elements.guessButton.disabled = state.isComplete;
     elements.guessInput.disabled = state.isComplete;
     if (!state.isComplete) elements.guessInput.focus();
@@ -133,6 +139,17 @@ function toCsv() {
 function csvCell(value) {
   const text = String(value);
   return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+}
+
+function triggerSuccessEffect() {
+  document.body.classList.remove("success-celebration");
+  void document.body.offsetWidth;
+  document.body.classList.add("success-celebration");
+  window.setTimeout(clearSuccessEffect, 3000);
+}
+
+function clearSuccessEffect() {
+  document.body.classList.remove("success-celebration");
 }
 
 elements.guessForm.addEventListener("submit", submitGuess);

@@ -48,6 +48,12 @@ http://127.0.0.1:4173
 - Mode 2：分數模式，`Score = 100 - abs(guess - answer)`
 - Mode 3：隱藏規則模式，每 5 格扣 5 分，並依照是否比上一輪更接近答案做 `+1 / -1 / +0`
 
+## 戲劇效果
+
+- 每次猜測會播放短音效。
+- 猜中時會播放成功音效，並讓整個畫面閃爍三次、維持成功底色約三秒。
+- 音效使用瀏覽器內建 Web Audio 產生，不需要額外音檔。
+
 ## 檔案結構
 
 ```text
@@ -61,6 +67,7 @@ components/
 lib/
   game.js
   scoring.js
+  sound.js
 tests/
   scoring.test.js
 ```
