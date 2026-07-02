@@ -1,5 +1,6 @@
 import { buildGameAnalysis } from "../lib/analysis.js";
 import { formatNumber } from "../lib/game.js";
+import { formatScore } from "../lib/scoring.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -58,6 +59,7 @@ export function renderGameAnalysis(container, { history, answer, range, isComple
         yLabel: "Score",
         lineColor: "#3457a6",
         focusValue: 100,
+        valueFormatter: formatScore,
       }),
     );
   }
@@ -112,7 +114,7 @@ function createSummary(analysis, endReason) {
     createMetricCard(endReason === "gave-up" ? "放棄時回合" : "猜中回合", `${analysis.totalRounds} 輪`),
     createMetricCard("進步次數", `${analysis.improvementCount} 次`),
     createMetricCard("進步率", `${analysis.improvementRate}%`),
-    createMetricCard("最高 Score", analysis.highestScore === null ? "Mode 1 不顯示" : `${analysis.highestScore}`),
+    createMetricCard("最高 Score", analysis.highestScore === null ? "Mode 1 不顯示" : formatScore(analysis.highestScore)),
   );
 
   const observation = document.createElement("p");
@@ -137,7 +139,7 @@ function createMetricCard(label, value) {
   return card;
 }
 
-function createLineChart({ title, helpText, rounds, values, minValue, maxValue, yLabel, lineColor, referenceValue, referenceLabel, focusValue }) {
+function createLineChart({ title, helpText, rounds, values, minValue, maxValue, yLabel, lineColor, referenceValue, referenceLabel, focusValue, valueFormatter = formatNumber }) {
   const wrapper = document.createElement("section");
   wrapper.className = "chart-card";
 
@@ -187,6 +189,7 @@ function createLineChart({ title, helpText, rounds, values, minValue, maxValue, 
       lineColor,
       referenceValue,
       referenceLabel,
+      valueFormatter,
     });
   };
 
@@ -243,12 +246,12 @@ function drawChart(svg, options) {
     label.setAttribute("y", String(point.y - 12));
     label.setAttribute("text-anchor", "middle");
     label.setAttribute("class", "chart-point-label");
-    label.textContent = formatNumber(point.value);
+    label.textContent = options.valueFormatter(point.value);
     svg.append(label);
   });
 }
 
-function drawGrid(svg, { width, height, padding, chartWidth, chartHeight, minValue, maxValue, yLabel, rounds }) {
+function drawGrid(svg, { width, height, padding, chartWidth, chartHeight, minValue, maxValue, yLabel, rounds, valueFormatter }) {
   const axis = document.createElementNS(SVG_NS, "path");
   axis.setAttribute("d", `M ${padding.left} ${padding.top} V ${height - padding.bottom} H ${width - padding.right}`);
   axis.setAttribute("fill", "none");
@@ -271,7 +274,7 @@ function drawGrid(svg, { width, height, padding, chartWidth, chartHeight, minVal
     text.setAttribute("y", String(y + 5));
     text.setAttribute("text-anchor", "end");
     text.setAttribute("class", "chart-axis-label");
-    text.textContent = formatNumber(tick);
+    text.textContent = valueFormatter(tick);
     svg.append(text);
   });
 

@@ -14,7 +14,7 @@ import {
   parseRange,
   rangeForSettings,
 } from "../lib/game.js";
-import { scoreGuess } from "../lib/scoring.js";
+import { formatScore, scoreGuess } from "../lib/scoring.js";
 import { playFeedbackSound, playThinkingSound } from "../lib/sound.js";
 
 const WIN_GIFS = [
@@ -205,7 +205,7 @@ function toJson() {
 
 function toCsv() {
   const rows = [["Round", "Guess", "Feedback", "Score"]];
-  state.history.forEach((item) => rows.push([item.round, item.guess, item.feedback, item.score ?? ""]));
+  state.history.forEach((item) => rows.push([item.round, item.guess, item.feedback, formatScore(item.score)]));
   return rows.map((row) => row.map(csvCell).join(",")).join("\n");
 }
 

@@ -1,3 +1,5 @@
+import { formatScore } from "../lib/scoring.js";
+
 export function renderHistory(tbody, history) {
   tbody.innerHTML = "";
 
@@ -15,7 +17,7 @@ export function renderHistory(tbody, history) {
       <td>${item.round}</td>
       <td>${item.guess}</td>
       <td class="${item.isCorrect ? "win-text" : ""}">${item.feedback}</td>
-      <td>${item.score ?? ""}</td>
+      <td>${formatScore(item.score)}</td>
     `;
     tbody.append(row);
   });

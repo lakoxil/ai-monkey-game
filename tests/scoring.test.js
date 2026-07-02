@@ -16,7 +16,8 @@ test("Mode 2 uses 100 minus absolute distance", () => {
 
 test("Score 100 is reserved for exact answers", () => {
   const decimalRange = { min: 0, max: 100, precision: 2 };
-  assert.equal(scoreMode2(58.08, 57.7, decimalRange).score, 99);
+  assert.equal(scoreMode2(58.08, 57.7, decimalRange).score, 99.62);
+  assert.equal(scoreMode2(57.7001, 57.7, decimalRange).score, 99.99);
   assert.equal(scoreMode3(58.08, 57.7, 58.1, decimalRange).score < 100, true);
   assert.equal(scoreMode2(57.7, 57.7, decimalRange).score, 100);
 });
@@ -53,10 +54,10 @@ test("parseRange accepts negative and decimal ranges", () => {
   assert.equal(parseRange("1.5", "10", { numberType: "integer", allowNegative: false }).ok, false);
 });
 
-test("scores scale to the configured range and stay integer 0-100", () => {
+test("scores scale to the configured range and stay inside 0-100", () => {
   const largeRange = { min: 1, max: 1000, precision: 0 };
   assert.equal(scoreMode2(500, 1000, largeRange).score, 50);
-  assert.equal(scoreMode2(1, 1000, largeRange).score, 0);
+  assert.equal(scoreMode2(1, 1000, largeRange).score, 0.1);
 
   const decimalRange = { min: -1, max: 1, precision: 1 };
   assert.equal(scoreMode2(0.5, 1, decimalRange).score, 75);
