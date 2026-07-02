@@ -37,6 +37,24 @@ body.success-celebration {
   animation: success-flash 3s ease-in-out both;
 }
 
+body.success-celebration::before {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  content: "";
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.95), transparent 18%),
+    radial-gradient(circle at 50% 50%, rgba(255, 212, 72, 0.82), transparent 34%),
+    linear-gradient(135deg, rgba(13, 122, 67, 0.45), rgba(255, 247, 191, 0.74));
+  mix-blend-mode: screen;
+  animation: success-burst 3s ease-out both;
+}
+
+body.success-celebration .game-panel {
+  animation: success-panel-pop 3s ease-out both;
+}
+
 button,
 input {
   font: inherit;
@@ -328,13 +346,13 @@ tbody tr:last-child td {
   16%,
   33%,
   50% {
-    background: #fff7bf;
+    background: #ffe45c;
   }
 
   8%,
   24%,
   41% {
-    background: #d8f7e4;
+    background: #18c56e;
   }
 
   58%,
@@ -343,9 +361,71 @@ tbody tr:last-child td {
   }
 }
 
+@keyframes success-burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+
+  8%,
+  24%,
+  41% {
+    opacity: 0.88;
+    transform: scale(1.04);
+  }
+
+  16%,
+  33%,
+  50% {
+    opacity: 0.38;
+    transform: scale(1.14);
+  }
+
+  70% {
+    opacity: 0.22;
+    transform: scale(1.22);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.28);
+  }
+}
+
+@keyframes success-panel-pop {
+  0% {
+    transform: scale(1);
+    box-shadow: var(--shadow);
+  }
+
+  12% {
+    transform: scale(1.035);
+    box-shadow: 0 26px 70px rgba(13, 122, 67, 0.28);
+  }
+
+  26% {
+    transform: scale(0.995);
+  }
+
+  42% {
+    transform: scale(1.02);
+  }
+
+  70%,
+  100% {
+    transform: scale(1);
+    box-shadow: var(--shadow);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   body.success-celebration {
     animation: success-hold 3s ease-out both;
+  }
+
+  body.success-celebration::before,
+  body.success-celebration .game-panel {
+    animation: none;
   }
 
   * {
