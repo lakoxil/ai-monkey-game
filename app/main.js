@@ -19,7 +19,6 @@ const elements = {
   resetButton: document.querySelector("#resetButton"),
   roundCount: document.querySelector("#roundCount"),
   successStatus: document.querySelector("#successStatus"),
-  teacherAnswer: document.querySelector("#teacherAnswer"),
   exportJsonButton: document.querySelector("#exportJsonButton"),
   exportCsvButton: document.querySelector("#exportCsvButton"),
 };
@@ -32,7 +31,6 @@ function render() {
   elements.modeDescription.textContent = currentMode.description;
   elements.roundCount.textContent = String(state.history.length);
   elements.successStatus.hidden = !state.isComplete;
-  elements.teacherAnswer.textContent = String(state.answer);
   elements.guessButton.disabled = state.isComplete;
   elements.guessInput.disabled = state.isComplete;
   renderHistory(elements.historyBody, state.history);

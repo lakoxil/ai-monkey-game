@@ -61,28 +61,16 @@
           <p id="streamingFeedback"></p>
         </section>
 
-        <details class="teacher-panel">
-          <summary>教師模式</summary>
-          <div class="teacher-grid">
-            <div>
-              <span>答案</span>
-              <strong id="teacherAnswer"></strong>
-            </div>
-            <div>
-              <span>Mode 3 隱藏規則</span>
-              <strong>每 5 格扣 5 分，加上接近/遠離微調</strong>
-            </div>
-          </div>
-          <div class="teacher-actions">
-            <button class="secondary-button" id="exportJsonButton" type="button">匯出 JSON</button>
-            <button class="secondary-button" id="exportCsvButton" type="button">匯出 CSV</button>
-          </div>
-        </details>
-
         <section class="history-section" aria-labelledby="history-title">
           <div class="section-row">
-            <h2 id="history-title">歷史紀錄</h2>
-            <span id="historyHint">每一次回饋都會成為下一次策略的線索。</span>
+            <div>
+              <h2 id="history-title">歷史紀錄</h2>
+              <span id="historyHint">每一次回饋都會成為下一次策略的線索。</span>
+            </div>
+            <div class="history-actions">
+              <button class="secondary-button" id="exportJsonButton" type="button">匯出 JSON</button>
+              <button class="secondary-button" id="exportCsvButton" type="button">匯出 CSV</button>
+            </div>
           </div>
           <div class="table-wrap">
             <table>
