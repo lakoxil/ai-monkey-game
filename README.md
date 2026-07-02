@@ -45,8 +45,16 @@ http://127.0.0.1:4173
 ## 模式
 
 - Mode 1：大於 / 小於模式
-- Mode 2：分數模式，`Score = 100 - abs(guess - answer)`
-- Mode 3：隱藏規則模式，每 5 格扣 5 分，並依照是否比上一輪更接近答案做 `+1 / -1 / +0`
+- Mode 2：分數模式，依照目前範圍把距離等比例換算成 `0–100` 的整數 Score。
+- Mode 3：隱藏規則模式，每 `5%` 範圍扣 5 分，並依照是否比上一輪更接近答案做 `+1 / -1 / +0`。
+
+## 數字範圍
+
+- 預設範圍是 `1–100`。
+- 可以手動改成正數、負數或小數範圍。
+- 猜測也可以輸入小數。
+- 所有 Score 都會四捨五入成整數，並限制在 `0–100`。
+- 未猜中前，匯出資料不會包含答案。
 
 ## 戲劇效果
 
@@ -82,11 +90,12 @@ lib/
   scoring.js
   sound.js
 tests/
+  analysis.test.js
   scoring.test.js
 ```
 
 ## 測試
 
 ```bash
-node --test tests/scoring.test.js
+node --test tests/scoring.test.js tests/analysis.test.js
 ```

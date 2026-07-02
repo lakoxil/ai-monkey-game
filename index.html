@@ -25,7 +25,7 @@
         <div class="status-grid">
           <div class="status-item">
             <span>目前數字範圍</span>
-            <strong>1–100</strong>
+            <strong id="rangeValue">1–100</strong>
           </div>
           <div class="status-item">
             <span>目前回合</span>
@@ -37,17 +37,31 @@
           </div>
         </div>
 
+        <form class="range-form" id="rangeForm">
+          <div>
+            <label for="rangeMinInput">最小值</label>
+            <input id="rangeMinInput" name="rangeMin" type="number" inputmode="decimal" step="any" value="1" required />
+          </div>
+          <div>
+            <label for="rangeMaxInput">最大值</label>
+            <input id="rangeMaxInput" name="rangeMax" type="number" inputmode="decimal" step="any" value="100" required />
+          </div>
+          <button class="secondary-button" id="applyRangeButton" type="submit">套用範圍</button>
+          <p class="input-help" id="rangeHelp" role="alert"></p>
+        </form>
+
         <div class="play-workspace">
           <form class="guess-form" id="guessForm">
-            <label for="guessInput">輸入 1–100 的整數</label>
+            <label for="guessInput" id="guessLabel">輸入目前範圍內的數字</label>
             <div class="guess-controls">
               <input
                 id="guessInput"
                 name="guess"
                 type="number"
-                inputmode="numeric"
+                inputmode="decimal"
                 min="1"
                 max="100"
+                step="any"
                 placeholder="例如 50"
                 autocomplete="off"
                 required

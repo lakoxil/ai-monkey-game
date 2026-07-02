@@ -1,8 +1,9 @@
 import { buildGameAnalysis } from "../lib/analysis.js";
+import { formatNumber } from "../lib/game.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
-export function renderGameAnalysis(container, { history, answer, isComplete }) {
+export function renderGameAnalysis(container, { history, answer, range, isComplete }) {
   container.innerHTML = "";
 
   if (!isComplete) {
@@ -11,7 +12,7 @@ export function renderGameAnalysis(container, { history, answer, isComplete }) {
     return;
   }
 
-  const analysis = buildGameAnalysis(history, answer);
+  const analysis = buildGameAnalysis(history, answer, range);
   container.hidden = false;
 
   container.append(createSummary(analysis));
@@ -22,7 +23,7 @@ export function renderGameAnalysis(container, { history, answer, isComplete }) {
       rounds: analysis.rounds,
       values: analysis.distances,
       minValue: 0,
-      maxValue: 100,
+      maxValue: analysis.maxDistance,
       yLabel: "距離",
       lineColor: "#0f5c54",
     }),
@@ -31,15 +32,15 @@ export function renderGameAnalysis(container, { history, answer, isComplete }) {
   container.append(
     createLineChart({
       title: "猜測位置折線圖",
-      helpText: `灰色虛線是答案 ${answer}，可以看出每一次 Action 在數線上的移動。`,
+      helpText: `灰色虛線是答案 ${formatNumber(answer)}，可以看出每一次 Action 在數線上的移動。`,
       rounds: analysis.rounds,
       values: analysis.guesses,
-      minValue: 1,
-      maxValue: 100,
+      minValue: analysis.range.min,
+      maxValue: analysis.range.max,
       yLabel: "Guess",
       lineColor: "#b95f18",
       referenceValue: answer,
-      referenceLabel: `答案 ${answer}`,
+      referenceLabel: `答案 ${formatNumber(answer)}`,
     }),
   );
 
@@ -205,7 +206,7 @@ function drawChart(svg, options) {
     label.setAttribute("y", String(point.y - 12));
     label.setAttribute("text-anchor", "middle");
     label.setAttribute("class", "chart-point-label");
-    label.textContent = String(point.value);
+    label.textContent = formatNumber(point.value);
     svg.append(label);
   });
 }
@@ -233,7 +234,7 @@ function drawGrid(svg, { width, height, padding, chartWidth, chartHeight, minVal
     text.setAttribute("y", String(y + 5));
     text.setAttribute("text-anchor", "end");
     text.setAttribute("class", "chart-axis-label");
-    text.textContent = String(tick);
+    text.textContent = formatNumber(tick);
     svg.append(text);
   });
 
