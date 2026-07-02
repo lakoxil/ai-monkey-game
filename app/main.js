@@ -19,11 +19,18 @@ import { playFeedbackSound, playThinkingSound } from "../lib/sound.js";
 
 const WIN_GIFS = [
   "./assets/win-gifs/0dc47b805e4d434d9d0d3d356271412c.gif",
+  "./assets/win-gifs/14052e2a29f0f2e213d76cd81411c9c9.gif",
   "./assets/win-gifs/1649997393653.gif",
   "./assets/win-gifs/1657739296839.gif",
   "./assets/win-gifs/1699944519975.gif",
   "./assets/win-gifs/1742638842402.gif",
+  "./assets/win-gifs/25776e4dd0c4b850655044dfcb51e7f0.gif",
+  "./assets/win-gifs/93009993abcfd4e9b0e1b27336844079.gif",
+  "./assets/win-gifs/969ab767faf64ef88139d6deae068128.gif",
   "./assets/win-gifs/4f807dab2cc6e926a1450cce03009d22.gif",
+  "./assets/win-gifs/cedab3078ecfb09f503d5d1081bddf1b.gif",
+  "./assets/win-gifs/e49b20869c6325234c29382e312d089b.gif",
+  "./assets/win-gifs/eb4e861fd45a3a55cd2683ab47231d49.gif",
   "./assets/win-gifs/giphy.gif",
   "./assets/win-gifs/yes.gif",
 ];
