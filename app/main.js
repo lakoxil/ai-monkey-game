@@ -50,6 +50,7 @@ const elements = {
   guessLabel: document.querySelector("#guessLabel"),
   guessInput: document.querySelector("#guessInput"),
   guessButton: document.querySelector("#guessButton"),
+  giveUpButton: document.querySelector("#giveUpButton"),
   inputHelp: document.querySelector("#inputHelp"),
   feedback: document.querySelector("#streamingFeedback"),
   historyBody: document.querySelector("#historyBody"),
@@ -85,8 +86,9 @@ function render() {
   elements.guessInput.inputMode = state.settings.numberType === "integer" ? "numeric" : "decimal";
   elements.guessInput.placeholder = `例如 ${exampleGuess(state.range, state.settings)}`;
   elements.roundCount.textContent = String(state.history.length);
-  elements.successStatus.hidden = !state.isComplete;
+  elements.successStatus.hidden = state.endReason !== "correct";
   elements.guessButton.disabled = state.isComplete;
+  elements.giveUpButton.disabled = state.isComplete;
   elements.guessInput.disabled = state.isComplete;
   renderHistory(elements.historyBody, state.history);
   renderGameAnalysis(elements.analysisRoot, {
@@ -94,6 +96,7 @@ function render() {
     answer: state.answer,
     range: state.range,
     isComplete: state.isComplete,
+    endReason: state.endReason,
   });
 }
 
@@ -148,6 +151,7 @@ function submitGuess(event) {
 
   state.history = [...state.history, record];
   state.isComplete = result.isCorrect;
+  state.endReason = result.isCorrect ? "correct" : null;
   elements.inputHelp.textContent = "";
   elements.guessInput.value = "";
   render();
@@ -190,6 +194,7 @@ function toJson() {
       mode: state.mode,
       range: state.range,
       settings: state.settings,
+      endReason: state.endReason,
       answer: state.isComplete ? state.answer : null,
       history: state.history,
     },
@@ -207,6 +212,34 @@ function toCsv() {
 function csvCell(value) {
   const text = String(value);
   return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+}
+
+function giveUpGame() {
+  if (state.isComplete) return;
+
+  if (state.history.length === 0) {
+    elements.inputHelp.textContent = "請先至少猜一次，才會有資料可以產生折線圖。";
+    elements.guessInput.focus();
+    return;
+  }
+
+  state.isComplete = true;
+  state.endReason = "gave-up";
+  clearSuccessEffect();
+  hideWinGif();
+  elements.inputHelp.textContent = "";
+  render();
+
+  const message = [
+    "已放棄本局。",
+    `這一局的答案是 ${formatNumber(state.answer)}。`,
+    "系統已把目前的歷史紀錄整理成下方折線圖。",
+    "請觀察每一次 Action 如何根據前面的 Feedback 改變方向。",
+  ].join("\n");
+
+  streamText(elements.feedback, message, () => {
+    playFeedbackSound(false);
+  });
 }
 
 function applyRange(event) {
@@ -279,6 +312,7 @@ elements.integerModeButton.addEventListener("click", () => updateNumberSettings(
 elements.decimalModeButton.addEventListener("click", () => updateNumberSettings({ ...state.settings, numberType: "decimal" }));
 elements.negativeModeButton.addEventListener("click", () => updateNumberSettings({ ...state.settings, allowNegative: !state.settings.allowNegative }));
 elements.resetButton.addEventListener("click", resetGame);
+elements.giveUpButton.addEventListener("click", giveUpGame);
 elements.exportJsonButton.addEventListener("click", () => downloadHistory("json"));
 elements.exportCsvButton.addEventListener("click", () => downloadHistory("csv"));
 

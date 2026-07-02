@@ -3,7 +3,7 @@ import { formatNumber } from "../lib/game.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
-export function renderGameAnalysis(container, { history, answer, range, isComplete }) {
+export function renderGameAnalysis(container, { history, answer, range, isComplete, endReason }) {
   container.innerHTML = "";
 
   if (!isComplete) {
@@ -15,7 +15,7 @@ export function renderGameAnalysis(container, { history, answer, range, isComple
   const analysis = buildGameAnalysis(history, answer, range);
   container.hidden = false;
 
-  container.append(createSummary(analysis));
+  container.append(createSummary(analysis, endReason));
   container.append(
     createLineChart({
       title: "距離答案折線圖",
@@ -73,19 +73,19 @@ function createPlaceholder() {
   title.textContent = "本局學習分析";
 
   const hint = document.createElement("span");
-  hint.textContent = "猜中後會自動產生折線圖。";
+  hint.textContent = "猜中或放棄後會自動產生折線圖。";
 
   header.append(title, hint);
 
   const message = document.createElement("p");
   message.className = "analysis-placeholder";
-  message.textContent = "先完成這一局，系統會把你的 Action、Feedback、Reward 變成學習過程圖。";
+  message.textContent = "先完成這一局，或在有歷史紀錄後按放棄，系統會把你的 Action、Feedback、Reward 變成學習過程圖。";
 
   wrapper.append(header, message);
   return wrapper;
 }
 
-function createSummary(analysis) {
+function createSummary(analysis, endReason) {
   const wrapper = document.createElement("section");
   wrapper.className = "analysis-section";
   wrapper.setAttribute("aria-labelledby", "analysis-title");
@@ -98,7 +98,7 @@ function createSummary(analysis) {
   title.textContent = "本局學習分析";
 
   const hint = document.createElement("span");
-  hint.textContent = "從每一步看出如何靠回饋修正策略。";
+  hint.textContent = endReason === "gave-up" ? "雖然本局放棄，資料仍然可以用來觀察策略。" : "從每一步看出如何靠回饋修正策略。";
 
   header.append(title, hint);
 
@@ -106,7 +106,7 @@ function createSummary(analysis) {
   cards.className = "analysis-summary";
 
   cards.append(
-    createMetricCard("猜中回合", `${analysis.totalRounds} 輪`),
+    createMetricCard(endReason === "gave-up" ? "放棄時回合" : "猜中回合", `${analysis.totalRounds} 輪`),
     createMetricCard("進步次數", `${analysis.improvementCount} 次`),
     createMetricCard("進步率", `${analysis.improvementRate}%`),
     createMetricCard("最高 Score", analysis.highestScore === null ? "Mode 1 不顯示" : `${analysis.highestScore}`),
@@ -114,7 +114,7 @@ function createSummary(analysis) {
 
   const observation = document.createElement("p");
   observation.className = "analysis-observation";
-  observation.textContent = analysis.observation;
+  observation.textContent = endReason === "gave-up" ? `這一局在找到答案前先停止了。${analysis.observation}` : analysis.observation;
 
   wrapper.append(header, cards, observation);
   return wrapper;
