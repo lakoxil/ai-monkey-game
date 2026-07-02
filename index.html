@@ -37,54 +37,56 @@
           </div>
         </div>
 
-        <form class="guess-form" id="guessForm">
-          <label for="guessInput">輸入 1–100 的整數</label>
-          <div class="guess-controls">
-            <input
-              id="guessInput"
-              name="guess"
-              type="number"
-              inputmode="numeric"
-              min="1"
-              max="100"
-              placeholder="例如 50"
-              autocomplete="off"
-              required
-            />
-            <button class="primary-button" id="guessButton" type="submit">猜測</button>
-          </div>
-          <p class="input-help" id="inputHelp" role="alert"></p>
-        </form>
+        <div class="play-workspace">
+          <form class="guess-form" id="guessForm">
+            <label for="guessInput">輸入 1–100 的整數</label>
+            <div class="guess-controls">
+              <input
+                id="guessInput"
+                name="guess"
+                type="number"
+                inputmode="numeric"
+                min="1"
+                max="100"
+                placeholder="例如 50"
+                autocomplete="off"
+                required
+              />
+              <button class="primary-button" id="guessButton" type="submit">猜測</button>
+            </div>
+            <p class="input-help" id="inputHelp" role="alert"></p>
+          </form>
+
+          <section class="history-section" aria-labelledby="history-title">
+            <div class="section-row">
+              <div>
+                <h2 id="history-title">歷史紀錄</h2>
+                <span id="historyHint">每一次回饋都會成為下一次策略的線索。</span>
+              </div>
+              <div class="history-actions">
+                <button class="secondary-button" id="exportJsonButton" type="button">匯出 JSON</button>
+                <button class="secondary-button" id="exportCsvButton" type="button">匯出 CSV</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Round</th>
+                    <th>Guess</th>
+                    <th>Feedback</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody id="historyBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
 
         <section class="feedback-box" aria-live="polite" aria-label="系統回饋">
           <div class="feedback-title">系統回饋</div>
           <p id="streamingFeedback"></p>
-        </section>
-
-        <section class="history-section" aria-labelledby="history-title">
-          <div class="section-row">
-            <div>
-              <h2 id="history-title">歷史紀錄</h2>
-              <span id="historyHint">每一次回饋都會成為下一次策略的線索。</span>
-            </div>
-            <div class="history-actions">
-              <button class="secondary-button" id="exportJsonButton" type="button">匯出 JSON</button>
-              <button class="secondary-button" id="exportCsvButton" type="button">匯出 CSV</button>
-            </div>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Round</th>
-                  <th>Guess</th>
-                  <th>Feedback</th>
-                  <th>Score</th>
-                </tr>
-              </thead>
-              <tbody id="historyBody"></tbody>
-            </table>
-          </div>
         </section>
 
         <div id="analysisRoot"></div>
