@@ -55,6 +55,33 @@ body.success-celebration .game-panel {
   animation: success-panel-pop 3s ease-out both;
 }
 
+.win-gif-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.win-gif-overlay[hidden] {
+  display: none;
+}
+
+.win-gif-overlay img {
+  width: min(72vw, 520px);
+  max-height: 72vh;
+  border: 8px solid rgba(255, 255, 255, 0.92);
+  border-radius: 8px;
+  box-shadow: 0 28px 90px rgba(23, 32, 29, 0.38);
+  object-fit: contain;
+}
+
+.win-gif-overlay.is-visible img {
+  animation: win-gif-pop 3s ease-out both;
+}
+
 button,
 input {
   font: inherit;
@@ -607,13 +634,40 @@ tbody tr:last-child td {
   }
 }
 
+@keyframes win-gif-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.62) rotate(-4deg);
+  }
+
+  12% {
+    opacity: 1;
+    transform: scale(1.08) rotate(2deg);
+  }
+
+  22% {
+    transform: scale(1) rotate(0deg);
+  }
+
+  82% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   body.success-celebration {
     animation: success-hold 3s ease-out both;
   }
 
   body.success-celebration::before,
-  body.success-celebration .game-panel {
+  body.success-celebration .game-panel,
+  .win-gif-overlay.is-visible img {
     animation: none;
   }
 

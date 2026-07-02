@@ -17,6 +17,17 @@ import {
 import { scoreGuess } from "../lib/scoring.js";
 import { playFeedbackSound, playThinkingSound } from "../lib/sound.js";
 
+const WIN_GIFS = [
+  "./assets/win-gifs/0dc47b805e4d434d9d0d3d356271412c.gif",
+  "./assets/win-gifs/1649997393653.gif",
+  "./assets/win-gifs/1657739296839.gif",
+  "./assets/win-gifs/1699944519975.gif",
+  "./assets/win-gifs/1742638842402.gif",
+  "./assets/win-gifs/4f807dab2cc6e926a1450cce03009d22.gif",
+  "./assets/win-gifs/giphy.gif",
+  "./assets/win-gifs/yes.gif",
+];
+
 const elements = {
   modeTabs: document.querySelector("#modeTabs"),
   modeDescription: document.querySelector("#modeDescription"),
@@ -41,9 +52,12 @@ const elements = {
   successStatus: document.querySelector("#successStatus"),
   exportJsonButton: document.querySelector("#exportJsonButton"),
   exportCsvButton: document.querySelector("#exportCsvButton"),
+  winGifOverlay: document.querySelector("#winGifOverlay"),
+  winGifImage: document.querySelector("#winGifImage"),
 };
 
 let state = createGameState();
+let winGifTimer = null;
 
 function render() {
   const currentMode = MODE_CONFIG.find((mode) => mode.id === state.mode);
@@ -79,6 +93,7 @@ function render() {
 function changeMode(mode) {
   state = createGameState(mode, state.range, state.settings);
   clearSuccessEffect();
+  hideWinGif();
   elements.inputHelp.textContent = "";
   elements.feedback.textContent = "已切換模式，請開始第一輪猜測。";
   render();
@@ -88,6 +103,7 @@ function changeMode(mode) {
 function resetGame() {
   state = createGameState(state.mode, state.range, state.settings);
   clearSuccessEffect();
+  hideWinGif();
   elements.inputHelp.textContent = "";
   elements.feedback.textContent = "新遊戲已開始。";
   render();
@@ -140,7 +156,10 @@ function submitGuess(event) {
   playThinkingSound();
   streamText(elements.feedback, message, () => {
     playFeedbackSound(result.isCorrect);
-    if (result.isCorrect) triggerSuccessEffect();
+    if (result.isCorrect) {
+      triggerSuccessEffect();
+      showWinGif();
+    }
     elements.guessButton.disabled = state.isComplete;
     elements.guessInput.disabled = state.isComplete;
     if (!state.isComplete) elements.guessInput.focus();
@@ -206,6 +225,7 @@ function updateNumberSettings(nextSettings) {
   const range = rangeForSettings(nextSettings);
   state = createGameState(state.mode, range, nextSettings);
   clearSuccessEffect();
+  hideWinGif();
   elements.rangeHelp.textContent = "";
   elements.inputHelp.textContent = "";
   elements.feedback.textContent = `已切換成${describeNumberSettings(state.settings)}數列，範圍已重設為 ${formatRange(state.range)}。`;
@@ -223,6 +243,27 @@ function triggerSuccessEffect() {
 
 function clearSuccessEffect() {
   document.body.classList.remove("success-celebration");
+}
+
+function showWinGif() {
+  const gif = WIN_GIFS[Math.floor(Math.random() * WIN_GIFS.length)];
+  if (winGifTimer) window.clearTimeout(winGifTimer);
+  elements.winGifImage.src = `${gif}?t=${Date.now()}`;
+  elements.winGifOverlay.hidden = false;
+  elements.winGifOverlay.classList.remove("is-visible");
+  void elements.winGifOverlay.offsetWidth;
+  elements.winGifOverlay.classList.add("is-visible");
+  winGifTimer = window.setTimeout(hideWinGif, 3000);
+}
+
+function hideWinGif() {
+  if (winGifTimer) {
+    window.clearTimeout(winGifTimer);
+    winGifTimer = null;
+  }
+  elements.winGifOverlay.classList.remove("is-visible");
+  elements.winGifOverlay.hidden = true;
+  elements.winGifImage.removeAttribute("src");
 }
 
 elements.guessForm.addEventListener("submit", submitGuess);
