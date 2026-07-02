@@ -14,6 +14,13 @@ test("Mode 2 uses 100 minus absolute distance", () => {
   assert.equal(scoreMode2(50, 50).score, 100);
 });
 
+test("Score 100 is reserved for exact answers", () => {
+  const decimalRange = { min: 0, max: 100, precision: 2 };
+  assert.equal(scoreMode2(58.08, 57.7, decimalRange).score, 99);
+  assert.equal(scoreMode3(58.08, 57.7, 58.1, decimalRange).score < 100, true);
+  assert.equal(scoreMode2(57.7, 57.7, decimalRange).score, 100);
+});
+
 test("Mode 3 uses five-point buckets plus direction adjustment", () => {
   assert.equal(scoreMode3(77, 100).score, 75);
   assert.equal(scoreMode3(80, 100, 70).score, 81);

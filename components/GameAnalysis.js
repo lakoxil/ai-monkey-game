@@ -26,6 +26,7 @@ export function renderGameAnalysis(container, { history, answer, range, isComple
       maxValue: analysis.maxDistance,
       yLabel: "距離",
       lineColor: "#0f5c54",
+      focusValue: 0,
     }),
   );
 
@@ -41,6 +42,7 @@ export function renderGameAnalysis(container, { history, answer, range, isComple
       lineColor: "#b95f18",
       referenceValue: answer,
       referenceLabel: `答案 ${formatNumber(answer)}`,
+      focusValue: answer,
     }),
   );
 
@@ -55,6 +57,7 @@ export function renderGameAnalysis(container, { history, answer, range, isComple
         maxValue: 100,
         yLabel: "Score",
         lineColor: "#3457a6",
+        focusValue: 100,
       }),
     );
   }
@@ -134,7 +137,7 @@ function createMetricCard(label, value) {
   return card;
 }
 
-function createLineChart({ title, helpText, rounds, values, minValue, maxValue, yLabel, lineColor, referenceValue, referenceLabel }) {
+function createLineChart({ title, helpText, rounds, values, minValue, maxValue, yLabel, lineColor, referenceValue, referenceLabel, focusValue }) {
   const wrapper = document.createElement("section");
   wrapper.className = "chart-card";
 
@@ -149,14 +152,48 @@ function createLineChart({ title, helpText, rounds, values, minValue, maxValue, 
 
   heading.append(titleNode, help);
 
+  const zoomControls = document.createElement("label");
+  zoomControls.className = "chart-zoom";
+  zoomControls.innerHTML = '<span>縱軸放大</span>';
+
+  const zoomInput = document.createElement("input");
+  zoomInput.type = "range";
+  zoomInput.min = "1";
+  zoomInput.max = "10";
+  zoomInput.step = "1";
+  zoomInput.value = "1";
+
+  const zoomValue = document.createElement("strong");
+  zoomValue.textContent = "1x";
+
+  zoomControls.append(zoomInput, zoomValue);
+
   const svg = document.createElementNS(SVG_NS, "svg");
   svg.setAttribute("viewBox", "0 0 680 260");
   svg.setAttribute("role", "img");
   svg.setAttribute("aria-label", title);
 
-  drawChart(svg, { rounds, values, minValue, maxValue, yLabel, lineColor, referenceValue, referenceLabel });
+  const redraw = () => {
+    const zoom = Number(zoomInput.value);
+    const domain = zoomDomain({ minValue, maxValue, focusValue, zoom });
+    zoomValue.textContent = `${zoom}x`;
+    svg.textContent = "";
+    drawChart(svg, {
+      rounds,
+      values,
+      minValue: domain.minValue,
+      maxValue: domain.maxValue,
+      yLabel,
+      lineColor,
+      referenceValue,
+      referenceLabel,
+    });
+  };
 
-  wrapper.append(heading, svg);
+  zoomInput.addEventListener("input", redraw);
+  redraw();
+
+  wrapper.append(heading, zoomControls, svg);
   return wrapper;
 }
 
@@ -219,7 +256,7 @@ function drawGrid(svg, { width, height, padding, chartWidth, chartHeight, minVal
   axis.setAttribute("stroke-width", "2");
   svg.append(axis);
 
-  [minValue, Math.round((minValue + maxValue) / 2), maxValue].forEach((tick) => {
+  [minValue, (minValue + maxValue) / 2, maxValue].forEach((tick) => {
     const y = yForValue(tick, minValue, maxValue, padding.top, chartHeight);
     const line = document.createElementNS(SVG_NS, "line");
     line.setAttribute("x1", String(padding.left));
@@ -283,5 +320,31 @@ function xForIndex(index, length, left, chartWidth) {
 
 function yForValue(value, minValue, maxValue, top, chartHeight) {
   const ratio = (value - minValue) / (maxValue - minValue);
-  return top + chartHeight - ratio * chartHeight;
+  const y = top + chartHeight - ratio * chartHeight;
+  return Math.max(top, Math.min(top + chartHeight, y));
+}
+
+function zoomDomain({ minValue, maxValue, focusValue, zoom }) {
+  const fullRange = Math.max(maxValue - minValue, 1);
+  if (zoom <= 1) return { minValue, maxValue };
+
+  const center = Number.isFinite(focusValue) ? focusValue : (minValue + maxValue) / 2;
+  const zoomedRange = fullRange / zoom;
+  let nextMin = center - zoomedRange / 2;
+  let nextMax = center + zoomedRange / 2;
+
+  if (nextMin < minValue) {
+    nextMax += minValue - nextMin;
+    nextMin = minValue;
+  }
+
+  if (nextMax > maxValue) {
+    nextMin -= nextMax - maxValue;
+    nextMax = maxValue;
+  }
+
+  return {
+    minValue: Math.max(minValue, nextMin),
+    maxValue: Math.min(maxValue, nextMax),
+  };
 }
